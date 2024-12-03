@@ -1,5 +1,10 @@
 // wordDetails.js
 function parseWordDetails(data) {
+    // 检查数据是否有效
+    if (!data || !data.Word) {
+        return '<p>No word details available.</p>'; // 处理未定义的情况
+    }
+
     // 创建 HTML 结构
     let html = `
         <div class="word-details">
@@ -20,7 +25,7 @@ function parseWordDetails(data) {
             <h4>Meanings:</h4>
             <ol>
                 ${data.Meanings.map(meaning => 
-                    `<li>${meaning[Object.keys(meaning)[0]]} — ${meaning.Description}</li>`
+                    `<li>${meaning.Meaning} — ${meaning.Description}</li>`
                 ).join('')}
                 <!-- 遍历并显示每个含义及其描述 -->
             </ol>
@@ -31,7 +36,7 @@ function parseWordDetails(data) {
             <h4>Examples:</h4>
             <ol>
                 ${data.Examples.map(example => 
-                    `<li>${example[Object.keys(example)[0]]} — "${example.Translation}"</li>`
+                    `<li>${example.Sentence} — "${example.Translation}"</li>`
                 ).join('')}
                 <!-- 遍历并显示每个例句及其翻译 -->
             </ol>

@@ -202,12 +202,13 @@
         <p>&copy; 2024 All rights reserved.</p>
     </footer>
 
-    <script src="wordDetails.js"></script> <!-- 引入 JavaScript 文件 -->
+    <script src="{{ url_for('static', filename='wordDetails.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('search-btn').addEventListener('click', async () => {
                 const word = document.getElementById('search-input').value;
                 const wordData = await fetchWordDetails(word);
+                console.log(wordData); // 调试输出
                 document.getElementById('word-details-container').innerHTML = parseWordDetails(wordData);
             });
         });
