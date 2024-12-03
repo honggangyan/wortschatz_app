@@ -7,7 +7,7 @@ The app was created to address the limitations of traditional language learning 
 
 Core Features:
 
-	1.	Simplified Learning: Concise word definitions without excessive details.
-	2.	Word Review: Easy access to previously searched words for reinforcement.
-	3.	Contextual Learning: New words are linked with learned vocabulary in definitions and sentence examples.
-	4.	GPT Integration: Utilizes GPT API to generate dynamic and relevant examples.
+1.	Simplified Learning: Concise word definitions without excessive details.
+2.	Word Review: Easy access to previously searched words for reinforcement.
+3.	Contextual Learning: New words are linked with learned vocabulary in definitions and sentence examples.
+4.	GPT Integration: Utilizes GPT API to generate dynamic and relevant examples.

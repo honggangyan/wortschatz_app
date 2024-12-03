@@ -86,7 +86,7 @@
             cursor: pointer;
             border: 2px solid var(--primary-color);
             background-color: transparent; /* 移除按钮颜色 */
-            color: var(--text-color); /* 使用默认文本颜色 */
+            color: var(--text-color); /* 用默认文本颜色 */
             transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
@@ -162,7 +162,7 @@
 
         /* 添加到CSS样式中 */
         .subtitle {
-            font-size: 24px;  /* 较小的字体大小 */
+            font-size: 20px;  /* 较小的字体大小 */
             font-weight: 400;  /* 正常字重 */
             font-style: italic;  /* 斜体 */
             letter-spacing: 1px;  /* 增加字间距 */
@@ -193,30 +193,35 @@
         </div>
 
         <div class="result-container">
-            <!-- Example of how the results will look -->
-            <div class="word-details">
-                <h3>Büro</h3>
-                <p>Part of Speech: Noun</p>
-                <p>Gender: Das Büro</p>
-                <p>Plural: Büros</p>
-                
-                <h4>Meanings:</h4>
-                <ol>
-                    <li>Office — A workplace for administrative tasks.</li>
-                    <li>Desk — A work area within a larger office.</li>
-                </ol>
-
-                <h4>Examples</h4>
-                <ol>
-                    <li>Das Büro ist im dritten Stock. — "The office is on the third floor."</li>
-                    <li>Ich gehe ins Büro. — "I am going to the office."</li>
-                </ol>
-            </div>
+            <!-- 用于动态生成单词详情的容器 -->
+            <div id="word-details-container"></div>
         </div>
     </main>
 
     <footer>
         <p>&copy; 2024 All rights reserved.</p>
     </footer>
+
+    <script src="wordDetails.js"></script> <!-- 引入 JavaScript 文件 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('search-btn').addEventListener('click', async () => {
+                const word = document.getElementById('search-input').value;
+                const wordData = await fetchWordDetails(word);
+                document.getElementById('word-details-container').innerHTML = parseWordDetails(wordData);
+            });
+        });
+
+        async function fetchWordDetails(word) {
+            const response = await fetch('/api/getWordDetails', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ word }),
+            });
+            return await response.json();
+        }
+    </script>
 </body>
 </html>
