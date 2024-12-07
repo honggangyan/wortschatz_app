@@ -22,32 +22,47 @@ function parseWordDetails(data) {
 
     // 添加含义部分
     html += `
-            <h4>Meanings:</h4>
-            <ol>
-                ${data.Meanings.map(meaning => 
-                    `<li>${meaning.Meaning} — ${meaning.Description}</li>`
-                ).join('')}
-                <!-- 遍历并显示每个含义及其描述 -->
-            </ol>
-    `;
-
-    // 添加例句部分
-    html += `
-            <h4>Examples:</h4>
-            <ol>
-                ${data.Examples.map(example => 
-                    `<li>${example.Sentence} — "${example.Translation}"</li>`
-                ).join('')}
-                <!-- 遍历并显示每个例句及其翻译 -->
-            </ol>
-        </div>
-    `;
-
+                <h4>Meanings:</h4>
+                <ol>
+                    ${data.Meanings.map(meaning => 
+                        `<li>
+                            <strong>${meaning.Meaning}</strong><br>
+                            ${meaning.Example}<br>
+                            <em>${meaning.Translation}</em>
+                        </li>`
+                    ).join('')}
+                </ol>
+            `;
     return html; // 返回生成的 HTML 字符串
 }
 
 // Example
 const wordData = {
+    "Word": "Schloss",
+    "Part_of_speech": "Noun",
+    "Gender": "Das Schloss",
+    "Plural": "Schlösser",
+    "Meanings": [
+        {
+            "Meaning": "Castle",
+            "Example": "Das Schloss auf dem Hügel ist sehr alt.",
+            "Translation": "The castle on the hill is very old."
+        },
+        {
+            "Meaning": "Lock",
+            "Example": "Ich habe den Schlüssel für das Schloss verloren.",
+            "Translation": "I lost the key to the lock."
+        }
+    ]
+};
+
+
+
+
+
+
+
+const wordexample = {
     "Word": "Schloss",
     "Part_of_speech": "Noun",
     "Gender": "Das Schloss",
