@@ -1,0 +1,185 @@
+/* Variables */
+:root {
+  --primary-color: #000;
+  --secondary-color: #fff;
+  --background-color: #f8f8f8;
+  --text-color: #000;
+  --placeholder-color: #666;
+  --highlight-color: #000;
+  
+  /* Typography */
+  --font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --heading-size: 84px;
+  --body-size: 18px;
+  --button-size: 14px;
+  
+  /* Spacing */
+  --section-spacing: 80px;
+  --element-spacing: 40px;
+  
+  /* Animation */
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-duration: 0.2s;
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-family);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+/* Typography */
+h1, h3, h4, p {
+  margin: 0;
+  color: var(--text-color);
+}
+
+h1 {
+  text-transform: uppercase;
+}
+
+/* Layout Components */
+header {
+  margin: var(--section-spacing) 0 calc(var(--section-spacing) * 1.5);
+}
+
+header h1 {
+  font-size: var(--heading-size);
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.search-container {
+  margin: var(--section-spacing) 0;
+}
+
+/* Form Elements */
+#search-input {
+  width: 100%;
+  padding: 16px 0;
+  font-size: 20px;
+  border: none;
+  border-bottom: 2px solid var(--primary-color);
+  background: transparent;
+  margin-bottom: var(--element-spacing);
+  color: var(--text-color);
+  transition: border var(--transition-duration) var(--transition-timing);
+}
+
+#search-input::placeholder {
+  color: var(--placeholder-color);
+  opacity: 1;
+}
+
+#search-input:focus {
+  outline: none;
+  border-bottom-width: 3px;
+}
+
+/* Buttons */
+button {
+  padding: 16px 32px;
+  font-size: var(--button-size);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border: 2px solid var(--primary-color);
+  background-color: transparent;
+  color: var(--text-color);
+  transition: all var(--transition-duration) var(--transition-timing);
+}
+
+/* Search Button States */
+#search-btn {
+  background-color: var(--highlight-color);
+  color: var(--secondary-color);
+}
+
+#search-btn:hover,
+#search-btn.hover-effect {
+  background-color: var(--secondary-color);
+  color: var(--highlight-color);
+  transform: scale(1.02);
+}
+
+#search-btn:active,
+#search-btn.pressed {
+  background-color: var(--secondary-color);
+  color: var(--highlight-color);
+  transform: scale(0.98);
+}
+
+/* Add Button States */
+#add-btn {
+  background-color: transparent;
+  color: var(--text-color);
+}
+
+#add-btn:hover {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+/* Content Sections */
+.word-details {
+  padding: var(--element-spacing);
+  margin: var(--element-spacing) 0;
+  background-color: var(--background-color);
+  border-left: 4px solid var(--primary-color);
+}
+
+.word-details h3 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.word-details h4 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: var(--element-spacing) 0 20px;
+  letter-spacing: 1px;
+}
+
+.word-details ol {
+  padding-left: 0;
+  list-style-position: inside;
+}
+
+.word-details p,
+.word-details li {
+  font-size: var(--body-size);
+  line-height: 1.5;
+  margin: 16px 0;
+  text-transform: none;
+}
+
+/* Footer */
+footer {
+  margin-top: calc(var(--section-spacing) * 1.5);
+  padding-top: var(--element-spacing);
+  border-top: 2px solid var(--primary-color);
+}
+
+footer p {
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 20px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 1px;
+  margin: 10px 0 var(--element-spacing);
+  text-align: left;
+}
+ 

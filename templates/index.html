@@ -1,228 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mein Wortschatz</title>
-    <style>
-        /* 基础样式 */
-        :root {
-            --primary-color: #000;
-            --secondary-color: #fff;
-            --background-color: #f8f8f8;
-            --text-color: #000;
-            --placeholder-color: #666;
-            --highlight-color: #000; /* 新增强调色 */
-        }
-
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-        }
-
-        /* 通用文本样式 */
-        h1 {
-            text-transform: uppercase;
-            color: var(--text-color); /* 主标题颜色 */
-        }
-
-        h3, h4, p {
-            margin: 0;
-            text-transform: capitalize;
-            color: var(--text-color); /* 移除颜色，使用默认文本颜色 */
-        }
-
-        /* 标题样式 */
-        header {
-            margin: 80px 0 120px;
-        }
-
-        header h1 {
-            font-size: 84px;
-            font-weight: 700;
-            letter-spacing: -2px;
-            line-height: 1;
-            margin-bottom: 20px;
-        }
-
-        /* 搜索区域样式 */
-        .search-container {
-            margin: 80px 0;
-        }
-
-        /* 搜索框样式 */
-        #search-input {
-            width: 100%;
-            padding: 16px 0;
-            font-size: 20px;
-            border: none;
-            border-bottom: 2px solid var(--primary-color);
-            background: transparent;
-            margin-bottom: 40px;
-            color: var(--text-color);
-        }
-
-        #search-input::placeholder {
-            color: var(--placeholder-color);
-            opacity: 1;
-        }
-
-        #search-input:focus {
-            outline: none;
-            border-bottom-width: 3px;
-        }
-
-        /* 按钮通用样式 */
-        button {
-            padding: 16px 32px;
-            font-size: 14px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            border: 2px solid var(--primary-color);
-            background-color: transparent; /* 移除按钮颜色 */
-            color: var(--text-color); /* 用默认文本颜色 */
-            transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-
-        /* 搜索按钮特殊样式 */
-        #search-btn {
-            background-color: var(--highlight-color); /* 使用强调色 */
-            color: var(--secondary-color); /* 使用白色文本 */
-        }
-
-        #search-btn:hover {
-            background-color: var(--secondary-color); /* 悬停时变为白色 */
-            color: var(--highlight-color); /* 悬停时变为强调色 */
-        }
-
-        /* 添加按钮特殊样式 */
-        #add-btn {
-            background-color: transparent; /* 移除颜色 */
-            color: var(--text-color); /* 使用默认文本颜色 */
-        }
-
-        #add-btn:hover {
-            background-color: var(--primary-color);
-            color: var(--secondary-color);
-        }
-
-        /* 单词详情样式 */
-        .word-details {
-            padding: 40px;
-            margin: 40px 0;
-            background-color: var(--background-color);
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .word-details h3 {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            color: var(--text-color); /* 移除颜色，使用默认文本颜色 */
-        }
-
-        .word-details h4 {
-            font-size: 20px;
-            font-weight: 700;
-            margin: 40px 0 20px;
-            letter-spacing: 1px;
-        }
-
-        /* 去掉缩进 */
-        .word-details ol {
-            padding-left: 0;  /* 去掉左侧缩进 */
-            list-style-position: inside;  /* 列表项标记在列表项内 */
-        }
-
-        .word-details p, .word-details li {
-            font-size: 18px;
-            line-height: 1.5;
-            margin: 16px 0;
-            text-transform: none;
-        }
-
-        /* 页脚样式 */
-        footer {
-            margin-top: 120px;
-            padding-top: 40px;
-            border-top: 2px solid var(--primary-color);
-        }
-
-        footer p {
-            font-size: 12px;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-        /* 添加到CSS样式中 */
-        .subtitle {
-            font-size: 20px;  /* 较小的字体大小 */
-            font-weight: 400;  /* 正常字重 */
-            font-style: italic;  /* 斜体 */
-            letter-spacing: 1px;  /* 增加字间距 */
-            color: var(--text-color);  /* 使用主文本颜色 */
-            margin-top: 10px;  /* 增加上边距 */
-            margin-bottom: 40px;  /* 增加下边距 */
-            text-align: left;  /* 左对齐 */
-        }
-    </style>
-</head>
-<body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
     <!-- 页面标题 -->
     <header>
-        <h1>Mein Wortschatz</h1>
-        <p class="subtitle">German Vocabulary Tool - Concise, Contextual, Cumulative</p>
+      <h1>Mein Wortschatz</h1>
+      <p class="subtitle">
+        German Vocabulary Tool - Concise, Contextual, Cumulative
+      </p>
     </header>
-    
-    <main>
-        <!-- 搜索功能区域 -->
-        <div class="search-container">
-            <!-- 搜索输入框 -->
-            <input type="text" id="search-input" placeholder="Enter your German word...">
-            
-            <div class="button-container">
-                <button id="search-btn">Search</button>
-                <button id="add-btn">Add</button>
-            </div>
-        </div>
 
-        <div class="result-container">
-            <!-- 用于动态生成单词详情的容器 -->
-            <div id="word-details-container"></div>
+    <main>
+      <!-- 搜索功能区域 -->
+      <div class="search-container">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Enter your German word..."
+        />
+        <div class="button-container">
+          <button id="search-btn">Search</button>
+          <button id="add-btn">Add</button>
         </div>
+      </div>
+
+      <div class="result-container">
+        <div id="word-details-container"></div>
+      </div>
     </main>
 
     <footer>
-        <p>&copy; 2024 All rights reserved.</p>
+      <p>&copy; 2024 All rights reserved.</p>
     </footer>
 
     <script src="{{ url_for('static', filename='wordDetails.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('search-btn').addEventListener('click', async () => {
-                const word = document.getElementById('search-input').value;
-                const wordData = await fetchWordDetails(word);
-                console.log(wordData); // 调试输出
-                document.getElementById('word-details-container').innerHTML = parseWordDetails(wordData);
-            });
-        });
-
-        async function fetchWordDetails(word) {
-            const response = await fetch('/api/getWordDetails', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ word }),
-            });
-            return await response.json();
-        }
-    </script>
-</body>
+  </body>
 </html>

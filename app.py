@@ -1,75 +1,79 @@
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS  # 导入 CORS
+from flask_cors import CORS  # Import CORS
 import openai
 from openai import OpenAI
-import config  # 导入您的配置文件
-import json  # 导入 json 模块
+import config  # Import configuration file
+import json  # Import json module
 
 app = Flask(__name__)
-CORS(app)  # 启用 CORS
+CORS(app)  # Enable CORS
 
-# 设置 OpenAI API 密钥
+# Set OpenAI API key
 client = OpenAI(api_key=config.OPENAI_API_KEY)
 
-@app.route('/')
-def wortschatz():
-    return render_template('index.html')
 
-@app.route('/api/getWordDetails', methods=['POST'])
+@app.route("/")
+def wortschatz():
+    return render_template("index.html")
+
+# API route for exchange information between frontend and backend
+# receive the word from the frontend as a JSON object with a "word" field
+@app.route("/api/getWordDetails", methods=["POST"])
 def get_word_details():
     data = request.json
-    word = data.get('word')
+    word = data.get("word")
 
     if not word:
-        return jsonify({"error": "No word provided"}), 400  # 返回错误信息
+        return jsonify({"error": "No word provided"}), 400  # Return error message
 
     try:
         chat_completion = client.chat.completions.create(
-                                                            messages=[
-                                                                {
-                                                                    "role": "user",
-                                                                    "content": f"""You are an expert in teaching German vocabulary. You will be given the Input'{word}'. Provide a JSON-like explanation of the Input using these rules:
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"""You are an expert in teaching German vocabulary. You will be given the Input'{word}'. Provide a JSON-like explanation of the Input using these rules:
                                                         1. Input Handling:
-                                                        - If the Input '{word}' is a non-German word, identify the original language of '{word}' because the meaning and translation parts of your Output must use the original language.
-                                                        - For misspelled German words, correct the spelling.
+                                                        - If the Input '{word}' is a non-German word, translate it to German and original form.
+                                                        - For misspelled input, correct the spelling.
 
                                                         2. Output Format:
                                                         {{
-                                                            "Word": "<German word>",
+                                                            "Word": "<The German word>",
                                                             "Part_of_speech": "<noun/verb/etc.>",
-                                                            "Gender": "<Der/Die/Das> (for nouns only)",
+                                                            "Gender": "<Der/Die/Das> (for nouns only) + the word",
                                                             "Plural": "<plural form> (for nouns only)",
                                                             "Meanings": [
                                                                 {{
-                                                                    "Meaning": "<not in German , but in the original language >",
+                                                                    "Meaning": "<short phrase of one distinct meaning - in English>",
                                                                     "Example": "<example in German>",
-                                                                    "Translation": "<translate the example in the same language of the Input'{word}' >"
+                                                                    "Translation": "<translation of the example>"
                                                                 }},
                                                                 {{
-                                                                    "Meaning": "<not in German , but in the original language >",
+                                                                    "Meaning": "<short phrase of one distinct meaning - in English >",
                                                                     "Example": "<example in German>",
-                                                                    "Translation": "<translate the example in the same language of the Input'{word}' >"
-                                                                }}
+                                                                    "Translation": "<translation of the example>"
+                                                                }}                                                        
                                                             ]
                                                         }}
 
                                                         3. Notes:
-                                                        - Include distinct, concise meanings in the original language.
+                                                        - The meanings should be distinct to each other to avoid repetition.
+                                                        - The Examples should be the same level of the given word, or even easier than it.
                                                         - Use accurate spelling and grammar.
                                                         - Do not include anything except the Output.
-                                                        - Pay attention here!!In the output, make sure the "Meaning" and "Translation" parts are using the original language of the Input'{word}'.
-                                                        """
-                                                                }
-                                                            ],
-                                                            model="gpt-4o-mini"
-                                                        )
-        # 解析 OpenAI 的响应
+                                                        """,
+                }
+            ],
+            model="gpt-4o-mini",
+        )
+        # Parse OpenAI's response
         response = chat_completion.choices[0].message.content
-        response_json = json.loads(response)  # 将字符串解析为 JSON 对象
-        return jsonify(response_json)  # 返回 JSON 对象
+        response_json = json.loads(response)  # Parse string to JSON object
+        return jsonify(response_json)  # Return JSON object
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500  # 返回错误信息
+        return jsonify({"error": str(e)}), 500  # Return error message
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5002)
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5002)
