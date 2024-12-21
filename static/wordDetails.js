@@ -73,7 +73,7 @@ class VocabApp {
     this.input.addEventListener('keypress', (event) => {
       if (event.key === 'Enter') {
         event.preventDefault();  // Prevent form submission
-        this.handleSearch();
+        this.handleSearch(event);
       }
     });
   }
@@ -86,14 +86,16 @@ class VocabApp {
    * 3. Fetches word details
    * 4. Displays results
    */
-  async handleSearch() {
+  async handleSearch(event) {
     try {
       // Get the word and remove extra spaces
       const word = this.input.value.trim();
       if (!word) return;  // Don't search if input is empty
 
-      // Show animation to give user feedback
-      this.animateButton();
+      // 只在按回车键时才触发动画
+      if (event && event.type === 'keypress') {
+        this.animateButton();
+      }
 
       // Get word details from the API
       const data = await this.fetchWordDetails(word);
@@ -165,19 +167,25 @@ class VocabApp {
   }
 
   /**
-   * Create HTML for word meanings section
-   * Shows all meanings with examples and translations
+   * Creates HTML for the word meanings section
+   * @param {Object} data - Object containing word details
+   * @param {Array} data.Meanings - Array of meanings, each containing Meaning, Example, and Translation
+   * @returns {string} Formatted HTML string
    */
   getMeanings(data) {
-    // Create HTML for each meaning
+    // Map through all meanings to create list items
     const meanings = data.Meanings.map(meaning => `
       <li>
+        <!-- Display German meaning -->
         <strong>${this.escape(meaning.Meaning)}</strong><br>
+        <!-- Display German example sentence -->
         ${this.escape(meaning.Example)}<br>
+        <!-- Display English translation in italics -->
         <em>${this.escape(meaning.Translation)}</em>
       </li>
-    `).join('');  // Join all meanings into one string
+    `).join('');  // Join all list items into a single string
 
+    // Return complete meanings section HTML with heading and ordered list
     return `<h4>Meanings:</h4><ol>${meanings}</ol>`;
   }
 
