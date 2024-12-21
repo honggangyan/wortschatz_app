@@ -1,181 +1,234 @@
-// wordDetails.js - Main JavaScript file for the German vocabulary learning app
-
-// =============== CONSTANTS & DATA STRUCTURES ===============
-// Define timing constants for button animations
-const ANIMATION_TIMINGS = {
-  HOVER_TO_PRESS: 50,   // Time (in ms) between hover and press effects
-  TOTAL_ANIMATION: 200  // Total duration (in ms) of the animation
-};
-
-// Example data structure showing the expected format of word details
-// This helps understand how the data should be structured
-const EXAMPLE_WORD = {
-  Word: "Schloss",              // The German word
-  Part_of_speech: "Noun",       // Word type (noun, verb, etc.)
-  Gender: "Das Schloss",        // Article + word (for nouns only)
-  Plural: "Schlösser",          // Plural form (for nouns only)
-  Meanings: [                   // Array of meaning objects
-    {
-      Meaning: "Castle",                                    // English translation
-      Example: "Das Schloss auf dem Hügel ist sehr alt.",  // Example in German
-      Translation: "The castle on the hill is very old.",   // Example translation
-    },
-    // Additional meanings...
-  ],
-};
-
-// =============== HTML GENERATION FUNCTIONS ===============
 /**
- * Main function to generate HTML for word details
- * @param {Object} data - Word data object containing all word information
- * @returns {string} HTML string to be inserted into the page
+ * German Vocabulary Learning Application
+ * 
+ * This application helps users learn German vocabulary by:
+ * 1. Looking up words through an API
+ * 2. Displaying word details with meanings and examples
+ * 3. Providing interactive UI with visual feedback
+ * 4. Handling errors gracefully
  */
-function parseWordDetails(data) {
-  // Check if we have valid data
-  if (!data || !data.Word) {
-    return '<h3 class="subtitle">Happy learning!!!</h3>';
+
+// ===== Configuration =====
+// Store all app-wide settings in one place for easy management
+const APP = {
+  config: {
+    // Animation timings (in milliseconds)
+    animation: {
+      duration: 200  // How long the button animation lasts
+    },
+    
+    // DOM element IDs - helps us find elements in the HTML
+    elements: {
+      searchBtn: 'search-btn',      // The search button
+      searchInput: 'search-input',  // The input field
+      results: 'word-details-container'  // Where results are displayed
+    }
+  }
+};
+
+/**
+ * Main Application Class
+ * This class handles all the app's functionality in an organized way
+ */
+class VocabApp {
+  /**
+   * Set up the application when it starts
+   * - Find all needed HTML elements
+   * - Set up event listeners
+   */
+  constructor() {
+    // First, get all the HTML elements we need
+    this.setupElements();
+    // Then, set up our event listeners
+    this.setupEventListeners();
   }
 
-  // Break down HTML generation into smaller, focused functions
-  const mainContent = generateMainContent(data);
-  const nounSpecificContent = generateNounContent(data);
-  const meaningsContent = generateMeaningsContent(data);
-
-  // Combine all parts into final HTML structure
-  return `
-    <div class="word-details">
-      ${mainContent}
-      ${nounSpecificContent}
-      ${meaningsContent}
-    </div>
-  `;
-}
-
-/**
- * Generates HTML for the main word information
- * @param {Object} data - Word data object
- * @returns {string} HTML string for main content
- */
-function generateMainContent(data) {
-  return `
-    <h3>${data.Word}</h3>
-    <p>Part of Speech: ${data.Part_of_speech}</p>
-  `;
-}
-
-/**
- * Generates HTML for noun-specific information (gender and plural)
- * Only generates content if the word is a noun
- * @param {Object} data - Word data object
- * @returns {string} HTML string for noun content or empty string
- */
-function generateNounContent(data) {
-  // Early return if not a noun
-  if (data.Part_of_speech.toLowerCase() !== "noun") return '';
-  
-  return `
-    <p>Gender: ${data.Gender}</p>
-    <p>Plural: ${data.Plural}</p>
-  `;
-}
-
-/**
- * Generates HTML for word meanings, examples, and translations
- * @param {Object} data - Word data object
- * @returns {string} HTML string for meanings section
- */
-function generateMeaningsContent(data) {
-  // Use map to transform each meaning object into HTML
-  // join('') combines all array elements into a single string
-  const meaningsList = data.Meanings.map(meaning => `
-    <li>
-      <strong>${meaning.Meaning}</strong><br>
-      ${meaning.Example}<br>
-      <em>${meaning.Translation}</em>
-    </li>
-  `).join('');
-
-  return `
-    <h4>Meanings:</h4>
-    <ol>${meaningsList}</ol>
-  `;
-}
-
-// =============== ANIMATION FUNCTIONS ===============
-/**
- * Handles button animation sequence
- * Creates a smooth transition effect when button is clicked
- * @param {HTMLElement} button - The button element to animate
- */
-function animateButton(button) {
-  // Step 1: Add hover effect (scale up)
-  button.classList.add('hover-effect');
-  
-  // Step 2: Add pressed effect (scale down) after delay
-  // setTimeout schedules code to run after a delay
-  setTimeout(() => {
-    button.classList.add('pressed');
+  /**
+   * Find and store references to all needed HTML elements
+   * This makes our code faster and more reliable
+   */
+  setupElements() {
+    const { elements } = APP.config;
     
-    // Step 3: Remove all effects after animation duration
-    // Nested setTimeout for cleanup
-    setTimeout(() => {
-      button.classList.remove('pressed');
-      button.classList.remove('hover-effect');
-    }, ANIMATION_TIMINGS.TOTAL_ANIMATION);
-  }, ANIMATION_TIMINGS.HOVER_TO_PRESS);
-}
+    // Store references to frequently used elements
+    this.btn = document.getElementById(elements.searchBtn);
+    this.input = document.getElementById(elements.searchInput);
+    this.results = document.getElementById(elements.results);
 
-// =============== API FUNCTIONS ===============
-/**
- * Makes API request to get word details from the server
- * @param {string} word - The word to look up
- * @returns {Promise<Object>} Promise that resolves to word details
- */
-async function fetchWordDetails(word) {
-  // fetch is a modern way to make HTTP requests
-  const response = await fetch("/api/getWordDetails", {
-    method: "POST",                              // HTTP method
-    headers: {
-      "Content-Type": "application/json",        // Tell server we're sending JSON
-    },
-    body: JSON.stringify({ word }),             // Convert data to JSON string
-  });
-  return await response.json();                 // Parse JSON response
-}
-
-// =============== EVENT HANDLERS ===============
-/**
- * Sets up all event listeners for the application
- * This is called when the DOM is fully loaded
- */
-function initializeEventListeners() {
-  // Get references to DOM elements we need
-  const searchButton = document.getElementById("search-btn");
-  const searchInput = document.getElementById("search-input");
-
-  // Define the search function that will be used for both button click and enter key
-  const performSearch = async () => {
-    animateButton(searchButton);                    // Animate the button
-    const word = searchInput.value;                 // Get input value
-    const wordData = await fetchWordDetails(word);  // Get word data from API
-    // Update the page with new word details
-    document.getElementById("word-details-container").innerHTML =
-      parseWordDetails(wordData);
-  };
-
-  // Add click event listener to search button
-  searchButton.addEventListener("click", performSearch);
-
-  // Add keypress event listener to input field
-  searchInput.addEventListener("keypress", (event) => {
-    // Check if the pressed key was Enter
-    if (event.key === "Enter") {
-      event.preventDefault();  // Prevent form submission
-      performSearch();         // Perform the search
+    // Make sure we found all elements
+    if (!this.btn || !this.input || !this.results) {
+      throw new Error('Could not find all required HTML elements');
     }
-  });
+  }
+
+  /**
+   * Set up all event listeners for user interactions
+   * This is where we respond to user actions like clicks and key presses
+   */
+  setupEventListeners() {
+    // When search button is clicked
+    this.btn.addEventListener('click', () => this.handleSearch());
+
+    // When Enter key is pressed in the input field
+    this.input.addEventListener('keypress', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();  // Prevent form submission
+        this.handleSearch();
+      }
+    });
+  }
+
+  /**
+   * Handle the search process
+   * This is the main function that:
+   * 1. Gets the word from input
+   * 2. Shows button animation
+   * 3. Fetches word details
+   * 4. Displays results
+   */
+  async handleSearch() {
+    try {
+      // Get the word and remove extra spaces
+      const word = this.input.value.trim();
+      if (!word) return;  // Don't search if input is empty
+
+      // Show animation to give user feedback
+      this.animateButton();
+
+      // Get word details from the API
+      const data = await this.fetchWordDetails(word);
+
+      // Show the results
+      this.displayResults(data);
+    } catch (error) {
+      // If anything goes wrong, show the error
+      console.error('Search failed:', error);
+      this.showError(error.message);
+    }
+  }
+
+  /**
+   * Get word details from the server
+   * Makes an API request to get information about the word
+   */
+  async fetchWordDetails(word) {
+    const response = await fetch('/api/getWordDetails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ word })
+    });
+
+    // Check if the request was successful
+    if (!response.ok) {
+      throw new Error('Could not fetch word details');
+    }
+
+    return response.json();  // Parse the JSON response
+  }
+
+  /**
+   * Display the word details in the UI
+   * Takes the API response and creates HTML to show it
+   */
+  displayResults(data) {
+    // Show a message if no word data was found
+    if (!data?.Word) {
+      this.results.innerHTML = '<h3 class="subtitle">Happy learning!!!</h3>';
+      return;
+    }
+
+    // Create and display the HTML for word details
+    const html = `
+      <div class="word-details">
+        <h3>${this.escape(data.Word)}</h3>
+        <p>Part of Speech: ${this.escape(data.Part_of_speech)}</p>
+        ${this.getNounDetails(data)}
+        ${this.getMeanings(data)}
+      </div>
+    `;
+
+    this.results.innerHTML = html;
+  }
+
+  /**
+   * Create HTML for noun-specific information
+   * Only shown if the word is a noun
+   */
+  getNounDetails(data) {
+    // Only show gender and plural for nouns
+    if (data.Part_of_speech.toLowerCase() !== 'noun') return '';
+    
+    return `
+      <p>Gender: ${this.escape(data.Gender)}</p>
+      <p>Plural: ${this.escape(data.Plural)}</p>
+    `;
+  }
+
+  /**
+   * Create HTML for word meanings section
+   * Shows all meanings with examples and translations
+   */
+  getMeanings(data) {
+    // Create HTML for each meaning
+    const meanings = data.Meanings.map(meaning => `
+      <li>
+        <strong>${this.escape(meaning.Meaning)}</strong><br>
+        ${this.escape(meaning.Example)}<br>
+        <em>${this.escape(meaning.Translation)}</em>
+      </li>
+    `).join('');  // Join all meanings into one string
+
+    return `<h4>Meanings:</h4><ol>${meanings}</ol>`;
+  }
+
+  /**
+   * Handle button animation
+   * Provides visual feedback when searching
+   */
+  animateButton() {
+    // Add the pressed effect
+    this.btn.classList.add('pressed');
+    
+    // Remove the effect after animation duration
+    setTimeout(() => {
+      this.btn.classList.remove('pressed');
+    }, APP.config.animation.duration);
+  }
+
+  /**
+   * Show error message to user
+   * Displays errors in a user-friendly way
+   */
+  showError(message) {
+    this.results.innerHTML = `
+      <div class="error-message">
+        <p>Error: ${this.escape(message)}</p>
+      </div>
+    `;
+  }
+
+  /**
+   * Make text safe for HTML
+   * Prevents XSS attacks by escaping special characters
+   */
+  escape(text) {
+    const safeCharacters = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, char => safeCharacters[char]);
+  }
 }
 
-// =============== INITIALIZATION ===============
-// Wait for DOM to be fully loaded before setting up event listeners
-document.addEventListener("DOMContentLoaded", initializeEventListeners);
+// Start the application when the page is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    new VocabApp();
+    console.log('Application started successfully');
+  } catch (error) {
+    console.error('Failed to start application:', error);
+  }
+});
